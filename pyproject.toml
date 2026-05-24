@@ -1,0 +1,17 @@
+[project]
+name = "pyglmbayes"
+version = "0.1.0"
+description = "Python port of glmbayes: Bayesian GLMs with exact iid posterior sampling"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "numpy",
+    "scipy",
+]
+[project.optional-dependencies]
+dev = ["pytest"]
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+[tool.hatch.build.targets.wheel]
+packages = ["src/pyglmbayes"]
