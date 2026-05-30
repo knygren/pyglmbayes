@@ -4,30 +4,9 @@
 from __future__ import annotations
 
 import os
-import shutil
 import sys
-from pathlib import Path
 
-
-def configure_r() -> None:
-    """Help rpy2 find R and load base packages on Windows."""
-    if os.environ.get("R_HOME"):
-        r_home = Path(os.environ["R_HOME"])
-    else:
-        r_exe = shutil.which("R.exe") or shutil.which("R")
-        if r_exe is None:
-            return
-        r_home = Path(r_exe).resolve().parent.parent
-
-    os.environ.setdefault("R_HOME", str(r_home))
-
-    r_bin = r_home / "bin"
-    r_bin_x64 = r_bin / "x64"
-    prepend = os.pathsep.join(str(path) for path in (r_bin_x64, r_bin) if path.is_dir())
-    if prepend:
-        path = os.environ.get("PATH", "")
-        if prepend not in path:
-            os.environ["PATH"] = prepend + os.pathsep + path
+from ensure_r_packages import configure_r
 
 
 def main() -> int:
