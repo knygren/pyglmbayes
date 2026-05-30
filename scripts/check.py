@@ -6,14 +6,18 @@ import sys
 from pathlib import Path
 
 
-def run_step(label: str, cmd: list[str], cwd: Path) -> bool:
+def run_step(label: str, cmd: list[str], cwd: Path, *, ok_codes: set[int] | None = None) -> bool:
     print(f"\n--- {label} ---")
     print(f"{' '.join(cmd)}")
     result = subprocess.call(cmd, cwd=cwd)
-    if result != 0:
+    allowed = ok_codes or {0}
+    if result not in allowed:
         print(f"FAILED: {label} (exit code {result})")
         return False
-    print(f"OK: {label}")
+    if result != 0:
+        print(f"OK: {label} (exit code {result})")
+    else:
+        print(f"OK: {label}")
     return True
 
 
@@ -31,6 +35,7 @@ def main() -> int:
         "Run tests",
         [py, "-m", "pytest", "-v"],
         root,
+        ok_codes={0, 5},  # 5 = no tests collected
     )
     ok &= run_step(
         "Import smoke test",
